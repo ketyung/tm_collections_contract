@@ -12,6 +12,8 @@ impl Contract {
         title : String, 
         symbol : String,
         description : Option<String>,
+        total_tickets : Option<u64>,
+        tickets_sold : Option<u64>,
         ticket_types : Option<Vec<TicketType>>,
         attributes : Option<Vec<EventAttribute>>,
         contract_id : Option<AccountId>) {
@@ -23,7 +25,7 @@ impl Contract {
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(5*TGAS))
             .create_event_callback(acc_id, title, symbol, description,
-            ticket_types, attributes, contract_id)
+            total_tickets,tickets_sold, ticket_types, attributes, contract_id)
         );
 
     
@@ -44,6 +46,8 @@ impl Contract {
         title : String, 
         symbol : String,
         description : Option<String>,
+        total_tickets : Option<u64>,
+        tickets_sold : Option<u64>,
         ticket_types : Option<Vec<TicketType>>,
         attributes : Option<Vec<EventAttribute>>,
         contract_id : Option<AccountId>,
@@ -59,7 +63,9 @@ impl Contract {
         if has_usr {
     
             self.internal_create_nft_collection(env::signer_account_id(), 
-            title, symbol,description,  ticket_types, attributes, contract_id);
+            title, symbol,description,  
+            total_tickets,tickets_sold,
+            ticket_types, attributes, contract_id);
     
             self.date_updated = Some(env::block_timestamp());
     
@@ -80,6 +86,8 @@ impl Contract {
         title : String, 
         symbol : String,
         description : Option<String>,
+        total_tickets : Option<u64>,
+        tickets_sold : Option<u64>,
         ticket_types : Option<Vec<TicketType>>,
         attributes : Option<Vec<EventAttribute>>,
         contract_id : Option<AccountId>) {
@@ -99,6 +107,8 @@ impl Contract {
         let event = Event {
             title : title,
             description : description,
+            total_tickets : total_tickets,
+            tickets_sold : tickets_sold,
             symbol : symbol,
             owner : acc_id,
             contract_id : contract_id, 

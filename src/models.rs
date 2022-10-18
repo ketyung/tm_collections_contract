@@ -14,6 +14,10 @@ pub struct Event{
 
     pub ticket_types : Option<Vec<TicketType>>,
 
+    pub total_tickets : Option<u64>,
+    
+    pub tickets_sold : Option<u64>,
+
     pub attributes : Option<Vec<EventAttribute>>,
 
     pub owner : AccountId, 
