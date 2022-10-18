@@ -13,11 +13,7 @@ use crate::models::{Event, EventId, TicketType, EventAttribute};
 
 #[derive(BorshSerialize, BorshStorageKey)]
 pub enum StorageKey {
-    NonFungibleToken,
-    Metadata,
-    TokenMetadata,
-    Enumeration,
-    Approval,
+    
     EventStorageKey,
 }
 
