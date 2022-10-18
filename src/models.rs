@@ -1,7 +1,8 @@
 use crate::*;
 
 
-#[derive(BorshDeserialize, BorshSerialize)]
+#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize)]
+#[serde(crate = "near_sdk::serde")]
 pub struct Event{
 
     pub title : String, 

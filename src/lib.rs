@@ -8,9 +8,6 @@ use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{near_bindgen, env, BorshStorageKey, AccountId, Gas, PromiseError  };
 use near_sdk::serde::{Serialize, Deserialize};
 use near_sdk::collections::{UnorderedMap};
-use near_contract_standards::non_fungible_token::metadata::{
-    NFTContractMetadata,  NFT_METADATA_SPEC};
-use near_contract_standards::non_fungible_token::TokenId;
 use crate::models::{Event, EventId, TicketType, EventAttribute};
 
 
