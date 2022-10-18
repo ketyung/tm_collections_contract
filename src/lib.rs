@@ -1,5 +1,6 @@
 pub mod models;
 pub mod events_manage;
+pub mod events_view;
 pub mod ext;
 
 
