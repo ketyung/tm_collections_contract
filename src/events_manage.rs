@@ -65,7 +65,7 @@ impl Contract {
         
         if has_usr {
     
-            self.internal_create_nft_collection(env::signer_account_id(), 
+            self.internal_create_event(env::signer_account_id(), 
             title, symbol,description,  
             total_tickets,tickets_sold,
             ticket_types, attributes, 
@@ -85,13 +85,15 @@ impl Contract {
 #[near_bindgen]
 impl Contract {
 
-    pub (crate) fn internal_create_nft_collection (&mut self, 
+    pub (crate) fn internal_create_event (&mut self, 
         acc_id : AccountId,     
         title : String, 
         symbol : String,
+        
         description : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
+
         ticket_types : Option<Vec<TicketType>>,
         attributes : Option<Vec<EventAttribute>>,
         template_type : Option<TicketTemplate>,

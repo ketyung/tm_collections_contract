@@ -2,7 +2,7 @@ pub mod models;
 pub mod events_manage;
 pub mod events_view;
 pub mod ext;
-
+mod tests;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{near_bindgen, env, BorshStorageKey, AccountId, Gas, PromiseError  };
