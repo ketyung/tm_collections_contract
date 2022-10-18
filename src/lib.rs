@@ -8,7 +8,7 @@ use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{near_bindgen, env, BorshStorageKey, AccountId, Gas, PromiseError  };
 use near_sdk::serde::{Serialize, Deserialize};
 use near_sdk::collections::{UnorderedMap};
-use crate::models::{Event, EventId, TicketType, EventAttribute};
+use crate::models::{Event, EventId, TicketType, EventAttribute, TicketTemplate};
 
 
 #[derive(BorshSerialize, BorshStorageKey)]

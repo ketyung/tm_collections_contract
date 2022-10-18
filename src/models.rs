@@ -21,6 +21,8 @@ pub struct Event{
 
     pub attributes : Option<Vec<EventAttribute>>,
 
+    pub ticket_template_type : Option<TicketTemplate>,
+
     pub owner : AccountId, 
 
     pub date_updated : Option<u64>, 
@@ -28,17 +30,40 @@ pub struct Event{
 }
 
 
-#[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
+#[serde(crate = "near_sdk::serde")]
+pub enum TicketTemplateType {
+
+    Fixed,
+
+    Custom,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct TicketTemplate {
+
+    pub value : String, 
+
+    pub template_type : TicketTemplateType,
+
+}
+
+
+#[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
 #[serde(crate = "near_sdk::serde")]
 pub enum EventAttributeType {
 
-    Date,
+    StartDate,
+
+    EndDate, 
 
     StartTime,
 
     EndTime, 
-}
 
+    MaxTicketPerWallet,
+}
 
 
 

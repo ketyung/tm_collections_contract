@@ -16,6 +16,7 @@ impl Contract {
         tickets_sold : Option<u64>,
         ticket_types : Option<Vec<TicketType>>,
         attributes : Option<Vec<EventAttribute>>,
+        template_type : Option<TicketTemplate>,
         contract_id : Option<AccountId>) {
 
         users_contract::ext(USERS_CONTRACT_ID.parse().unwrap())
@@ -25,7 +26,8 @@ impl Contract {
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(5*TGAS))
             .create_event_callback(acc_id, title, symbol, description,
-            total_tickets,tickets_sold, ticket_types, attributes, contract_id)
+            total_tickets,tickets_sold, ticket_types, 
+             attributes,template_type, contract_id)
         );
 
     
@@ -50,6 +52,7 @@ impl Contract {
         tickets_sold : Option<u64>,
         ticket_types : Option<Vec<TicketType>>,
         attributes : Option<Vec<EventAttribute>>,
+        template_type : Option<TicketTemplate>,
         contract_id : Option<AccountId>,
         #[callback_result] call_result: Result<bool, PromiseError>) {
         
@@ -65,7 +68,8 @@ impl Contract {
             self.internal_create_nft_collection(env::signer_account_id(), 
             title, symbol,description,  
             total_tickets,tickets_sold,
-            ticket_types, attributes, contract_id);
+            ticket_types, attributes, 
+            template_type, contract_id);
     
             self.date_updated = Some(env::block_timestamp());
     
@@ -90,6 +94,7 @@ impl Contract {
         tickets_sold : Option<u64>,
         ticket_types : Option<Vec<TicketType>>,
         attributes : Option<Vec<EventAttribute>>,
+        template_type : Option<TicketTemplate>,
         contract_id : Option<AccountId>) {
     
         
@@ -114,6 +119,7 @@ impl Contract {
             contract_id : contract_id, 
             ticket_types : ticket_types, 
             attributes : attributes,
+            ticket_template_type: template_type, 
             date_updated : Some(env::block_timestamp()),
         };
 
