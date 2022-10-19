@@ -4,6 +4,7 @@ mod tests {
     // use near_sdk::MockedBlockchain;
     use near_sdk::{testing_env, AccountId};
     use crate::*;
+    use crate::models::EventAttributeType;
     
     fn get_context(predecessor_account_id: AccountId) -> VMContextBuilder {
         let mut builder = VMContextBuilder::new();
@@ -28,21 +29,28 @@ mod tests {
         "Test Event 01".to_string(), 
         "TC01".to_string(),
         Some("This is an event for selling 5000 NFT tickets".to_string()),
-        None, None, None, None, None, None );
+        None, None, None, Some(vec![EventAttribute{
+            name : EventAttributeType::StartDate,
+            value : "2022-10-20".to_string(),
+        }, EventAttribute{
+            name : EventAttributeType::EndDate,
+            value : "2022-10-21".to_string(),
+        }]), None, None );
 
 
         _contract.internal_create_event(acc_id0.clone(),
         "Test Event 02".to_string(), 
         "TC02".to_string(),
         Some("This is an event for selling 250 NFT tickets".to_string()),
-        None, None, None, None, None, None );
+        None, None, None, Some(vec![EventAttribute{name : EventAttributeType::MaxTicketPerWallet,
+            value : "1".to_string()}]), None, None );
 
 
         let events = _contract.get_events_of(acc_id0, None, None);
 
         for (pos, e) in events.iter().enumerate() {
-            println!("{} - Event {:?} : {:?}", (pos + 1), e.title, 
-            e.description.clone().unwrap_or("None".to_string()));
+            println!("{} - Event {:?} : {:?}, attribs: {:?}", (pos + 1), e.title, 
+            e.description.clone().unwrap_or("None".to_string()), e.attributes);
         }
 
         testing_env!(context.is_view(true).build());

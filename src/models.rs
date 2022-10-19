@@ -67,7 +67,7 @@ pub enum EventAttributeType {
 
 
 
-#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize)]
+#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct EventAttribute{
 
