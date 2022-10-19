@@ -25,6 +25,7 @@ impl Contract {
         acc_id : AccountId,     
         title : String, 
         symbol : String,
+        icon : Option<String>,
         description : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
@@ -40,9 +41,9 @@ impl Contract {
         .then( 
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(5*TGAS))
-            .create_event_callback(acc_id, title, symbol, description,
-            total_tickets,tickets_sold, ticket_types, 
-             attributes,template_type, contract_id)
+            .create_event_callback(acc_id, title, symbol, 
+            icon, description, total_tickets,tickets_sold, 
+            ticket_types,  attributes,template_type, contract_id)
         );
 
     
@@ -62,6 +63,7 @@ impl Contract {
         acc_id : AccountId,     
         title : String, 
         symbol : String,
+        icon : Option<String>,
         description : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
@@ -81,7 +83,7 @@ impl Contract {
         if has_usr {
     
             self.internal_create_event(env::signer_account_id(), 
-            title, symbol,description,  
+            title, symbol, icon,  description,  
             total_tickets,tickets_sold,
             ticket_types, attributes, 
             template_type, contract_id);
@@ -104,7 +106,8 @@ impl Contract {
         acc_id : AccountId,     
         title : String, 
         symbol : String,
-        
+        icon : Option<String>,
+
         description : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
@@ -129,6 +132,7 @@ impl Contract {
         let event = Event {
             title : title,
             description : description,
+            icon : icon, 
             total_tickets : total_tickets,
             tickets_sold : tickets_sold,
             symbol : symbol,

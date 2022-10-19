@@ -11,6 +11,8 @@ pub struct Event{
 
     pub description : Option<String>, 
 
+    pub icon : Option<String>,
+
     pub contract_id : Option<AccountId>,
 
     pub ticket_types : Option<Vec<TicketType>>,
