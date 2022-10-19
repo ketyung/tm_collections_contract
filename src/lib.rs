@@ -48,7 +48,8 @@ impl Default for Contract{
 impl Contract {
 
     #[init]
-    #[private] // Public - but only callable by env::current_account_id()
+    #[private] // for internal testing only
+    #[allow(dead_code)]
     pub (crate) fn init() -> Self {
         assert!(!env::state_exists(), "Already initialized");
         
