@@ -26,6 +26,7 @@ impl Contract {
         title : String, 
         symbol : String,
         icon : Option<String>,
+        base_uri : Option<String>,
         description : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
@@ -42,7 +43,7 @@ impl Contract {
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(5*TGAS))
             .create_event_callback(acc_id, title, symbol, 
-            icon, description, total_tickets,tickets_sold, 
+            icon, base_uri, description, total_tickets,tickets_sold, 
             ticket_types,  attributes,template_type, contract_id)
         );
 
@@ -64,6 +65,7 @@ impl Contract {
         title : String, 
         symbol : String,
         icon : Option<String>,
+        base_uri : Option<String>,
         description : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
@@ -83,7 +85,7 @@ impl Contract {
         if has_usr {
     
             self.internal_create_event(env::signer_account_id(), 
-            title, symbol, icon,  description,  
+            title, symbol, icon, base_uri, description,  
             total_tickets,tickets_sold,
             ticket_types, attributes, 
             template_type, contract_id);
@@ -107,6 +109,7 @@ impl Contract {
         title : String, 
         symbol : String,
         icon : Option<String>,
+        base_uri : Option<String>,
 
         description : Option<String>,
         total_tickets : Option<u64>,
@@ -133,6 +136,7 @@ impl Contract {
             title : title,
             description : description,
             icon : icon, 
+            base_uri : base_uri, 
             total_tickets : total_tickets,
             tickets_sold : tickets_sold,
             symbol : symbol,

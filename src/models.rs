@@ -14,6 +14,8 @@ pub struct Event{
     // the icon/logo of the event
     pub icon : Option<String>,
 
+    pub base_uri : Option<String>,
+    
     pub contract_id : Option<AccountId>,
 
     pub ticket_types : Option<Vec<TicketType>>,

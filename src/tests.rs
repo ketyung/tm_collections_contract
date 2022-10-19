@@ -27,7 +27,7 @@ mod tests {
             
         _contract.internal_create_event(acc_id0.clone(),
         "Test Event 01".to_string(), 
-        "TC01".to_string(), Some("http://img.io/img/kslsj3".to_string()), 
+        "TC01".to_string(), Some("http://img.io/img/kslsj3".to_string()), None, 
         Some("This is an event for selling 5000 NFT tickets".to_string()),
         None, None, None, Some(vec![EventAttribute{
             name : EventAttributeType::StartDate,
@@ -40,7 +40,7 @@ mod tests {
 
         _contract.internal_create_event(acc_id0.clone(),
         "Test Event 02".to_string(), 
-        "TC02".to_string(), None, 
+        "TC02".to_string(), None, None, 
         Some("This is an event for selling 250 NFT tickets".to_string()),
         None, None, None, Some(vec![EventAttribute{name : EventAttributeType::MaxTicketPerWallet,
             value : "1".to_string()}]), None, None );
