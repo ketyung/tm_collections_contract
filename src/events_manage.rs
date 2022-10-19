@@ -2,7 +2,21 @@ use crate::*;
 use crate::ext::*;
 
 
-const USERS_CONTRACT_ID :  &'static str = "tm_users_contract.testnet";
+const DEFAULT_USERS_CONTRACT_ID :  &'static str = "tm_users_contract.testnet";
+
+#[near_bindgen]
+impl Contract {
+
+    fn get_users_contract_account(&self) -> AccountId {
+
+        if self.users_contract_id.is_some() {
+
+            return self.users_contract_id.clone().unwrap();
+        }
+
+        DEFAULT_USERS_CONTRACT_ID.parse().unwrap()
+    }
+}
 
 #[near_bindgen]
 impl Contract {
@@ -19,7 +33,8 @@ impl Contract {
         template_type : Option<TicketTemplate>,
         contract_id : Option<AccountId>) {
 
-        users_contract::ext(USERS_CONTRACT_ID.parse().unwrap())
+
+        users_contract::ext(self.get_users_contract_account())
         .with_static_gas(Gas(5*TGAS))
         .has_user(&acc_id.clone().as_str().to_string())
         .then( 
