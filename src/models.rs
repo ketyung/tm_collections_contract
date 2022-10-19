@@ -11,6 +11,7 @@ pub struct Event{
 
     pub description : Option<String>, 
 
+    // the icon/logo of the event
     pub icon : Option<String>,
 
     pub contract_id : Option<AccountId>,
