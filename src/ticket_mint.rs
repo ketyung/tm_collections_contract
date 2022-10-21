@@ -4,19 +4,26 @@ use crate::ext::*;
 #[near_bindgen]
 impl Contract {
 
-
-    pub fn ticket_mint (&self, 
+    #[payable]
+    pub fn ticket_mint (&mut self, 
     mint_by : AccountId,     
     collection_id : CollectionId, 
-    token_id : TokenId, ticket_image : String) -> bool {
+    token_id : TokenId, ticket_image : String, 
+    ticket_type : Option<TicketType>) {
         
         let coll =  self.collections.get(&collection_id);
         if coll.is_none () {
-            return false;
+            env::panic_str(format!("Collection {:?} not found",collection_id).as_str());
         }
 
         let uw_coll = coll.unwrap();
 
+        let tprice = Self::obtain_ticket_price_in_near(uw_coll.ticket_types, ticket_type);
+
+        if env::attached_deposit() < tprice {
+            env::panic_str(format!("Attached deposit {} is less than ticket price {}",env::attached_deposit(),tprice).as_str());
+        }
+        
         let token_meta = Self::create_token_metadata(
             format!("Ticket {}", token_id),
             uw_coll.title,Some(ticket_image), None);
@@ -25,10 +32,32 @@ impl Contract {
         .with_static_gas(Gas(5*TGAS))
         .nft_mint(token_id, mint_by, token_meta).as_return();
 
+    }
+
+
+    fn obtain_ticket_price_in_near(ticket_types : Option<Vec<TicketType>>, ticket_type : Option<TicketType>) -> u128{
+
+        let mut ticket_price : u128 = 0;
         
+        if ticket_type.is_some() {
 
-        true 
+            if ticket_types.is_some() {
 
+                let tt = ticket_type.unwrap();
+                if !ticket_types.unwrap().contains(&tt) {
+                    env::panic_str(format!("Invalid ticket type {:?}",tt).as_str());
+                }
+
+                ticket_price =  (((tt.price as f64) / 1000.00) * (NEAR as f64)) as u128;
+
+            }
+            else {
+                env::panic_str("Invalid ticket type!");
+            }
+        }
+
+
+        return ticket_price;
     }
 
 

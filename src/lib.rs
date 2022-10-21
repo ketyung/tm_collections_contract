@@ -14,6 +14,8 @@ use near_contract_standards::non_fungible_token::metadata::TokenMetadata;
 use near_contract_standards::non_fungible_token::{Token, TokenId};
 
 
+const NEAR: u128 = 1000_000_000_000_000_000_000_000;
+
 #[derive(BorshSerialize, BorshStorageKey)]
 pub enum StorageKey {
     

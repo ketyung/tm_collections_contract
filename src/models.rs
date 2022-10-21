@@ -85,7 +85,7 @@ pub struct Attribute{
 
 
 
-#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct CollectionId {
 
@@ -98,7 +98,7 @@ pub struct CollectionId {
 }
 
 
-#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize)]
+#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct TicketType{
 
@@ -110,5 +110,11 @@ pub struct TicketType{
     pub price : u32, 
 }
 
+impl PartialEq for TicketType {
+
+    fn eq(&self, other: &Self) -> bool {
+        self.ticket_type == other.ticket_type  
+    }
+}
 
 
