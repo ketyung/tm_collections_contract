@@ -50,10 +50,15 @@ impl Contract {
         
         Promise::new(collection_id.clone().owner).transfer(ticket_price).as_return();
 
-        ticket_sales_record::ext(self.ticket_sales_contract_id.clone().unwrap())
-        .with_static_gas(Gas(5*TGAS))
-        .insert_ticket_sale(collection_id, token_id,mint_by).as_return();
+        // record ticket sales
+        if self.ticket_sales_contract_id.is_some() {
 
+            ticket_sales_record::ext(self.ticket_sales_contract_id.clone().unwrap())
+            .with_static_gas(Gas(5*TGAS))
+            .insert_ticket_sale(collection_id, token_id,mint_by).as_return();
+    
+        }
+      
     }
 }
 
