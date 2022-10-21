@@ -11,9 +11,9 @@ impl Contract {
     token_id : TokenId, ticket_image : String, 
     ticket_type : Option<TicketType>) {
         
-        let coll =  self.collections.get(&collection_id);
+        let coll =  self.collections.get(&collection_id.clone());
         if coll.is_none () {
-            env::panic_str(format!("Collection {:?} not found",collection_id).as_str());
+            env::panic_str(format!("Collection {:?} not found",collection_id.clone()).as_str());
         }
 
         let uw_coll = coll.unwrap();
@@ -30,11 +30,11 @@ impl Contract {
 
         nft_contract::ext(uw_coll.contract_id.unwrap())
         .with_static_gas(Gas(5*TGAS))
-        .nft_mint(token_id, mint_by, token_meta)
+        .nft_mint(token_id.clone(), mint_by.clone(), token_meta)
         .then( 
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(1*TGAS))
-            .after_mint_and_pay_owner_callback(uw_coll.owner, tprice)
+            .after_mint_and_pay_owner_callback(collection_id, tprice, token_id, mint_by)
         );
 
 
@@ -45,9 +45,15 @@ impl Contract {
 impl Contract {
 
     #[private] // Public - but only callable by env::current_account_id()
-    pub fn after_mint_and_pay_owner_callback(&mut self,collection_owner : AccountId, ticket_price : u128 ){
+    pub fn after_mint_and_pay_owner_callback(&mut self, collection_id : CollectionId, 
+        ticket_price : u128, token_id : TokenId, mint_by : AccountId ){
         
-        Promise::new(collection_owner).transfer(ticket_price).as_return();
+        Promise::new(collection_id.clone().owner).transfer(ticket_price).as_return();
+
+        ticket_sales_record::ext(self.ticket_sales_contract_id.clone().unwrap())
+        .with_static_gas(Gas(5*TGAS))
+        .insert_ticket_sale(collection_id, token_id,mint_by).as_return();
+
     }
 }
 

@@ -85,7 +85,7 @@ pub struct Attribute{
 
 
 
-#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Debug)]
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Debug,Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub struct CollectionId {
 
