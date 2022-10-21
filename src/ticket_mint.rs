@@ -23,7 +23,7 @@ impl Contract {
         if env::attached_deposit() < tprice {
             env::panic_str(format!("Attached deposit {} is less than ticket price {}",env::attached_deposit(),tprice).as_str());
         }
-        
+
         let token_meta = Self::create_token_metadata(
             format!("Ticket {}", token_id),
             uw_coll.title,Some(ticket_image), None);
@@ -33,7 +33,10 @@ impl Contract {
         .nft_mint(token_id, mint_by, token_meta).as_return();
 
     }
+}
 
+#[near_bindgen]
+impl Contract {
 
     fn obtain_ticket_price_in_near(ticket_types : Option<Vec<TicketType>>, ticket_type : Option<TicketType>) -> u128{
 
