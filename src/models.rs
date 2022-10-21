@@ -108,6 +108,8 @@ pub struct TicketType{
     // the stored value is always divided by 1000
     // e.g. 3.2 Near token is stored as 3200 
     pub price : u32, 
+
+    pub color_code : Option<String>,
 }
 
 impl PartialEq for TicketType {
