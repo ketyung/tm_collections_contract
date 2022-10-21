@@ -30,8 +30,24 @@ impl Contract {
 
         nft_contract::ext(uw_coll.contract_id.unwrap())
         .with_static_gas(Gas(5*TGAS))
-        .nft_mint(token_id, mint_by, token_meta).as_return();
+        .nft_mint(token_id, mint_by, token_meta)
+        .then( 
+            Self::ext(env::current_account_id())
+            .with_static_gas(Gas(1*TGAS))
+            .after_mint_and_pay_owner_callback(uw_coll.owner, tprice)
+        );
 
+
+    }
+}
+
+#[near_bindgen]
+impl Contract {
+
+    #[private] // Public - but only callable by env::current_account_id()
+    pub fn after_mint_and_pay_owner_callback(&mut self,collection_owner : AccountId, ticket_price : u128 ){
+        
+        Promise::new(collection_owner).transfer(ticket_price).as_return();
     }
 }
 
