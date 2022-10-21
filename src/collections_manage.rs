@@ -21,17 +21,18 @@ impl Contract {
 #[near_bindgen]
 impl Contract {
 
-    pub fn create_event (&mut self, 
+    pub fn create_collection (&mut self, 
         acc_id : AccountId,     
         title : String, 
         symbol : String,
         icon : Option<String>,
         base_uri : Option<String>,
         description : Option<String>,
+        category : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
         ticket_types : Option<Vec<TicketType>>,
-        attributes : Option<Vec<EventAttribute>>,
+        attributes : Option<Vec<Attribute>>,
         template_type : Option<TicketTemplate>,
         contract_id : Option<AccountId>) {
 
@@ -42,8 +43,9 @@ impl Contract {
         .then( 
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(5*TGAS))
-            .create_event_callback(acc_id, title, symbol, 
-            icon, base_uri, description, total_tickets,tickets_sold, 
+            .create_collection_callback(acc_id, title, symbol, 
+            icon, base_uri, description, category,
+            total_tickets,tickets_sold, 
             ticket_types,  attributes,template_type, contract_id)
         );
 
@@ -60,17 +62,18 @@ impl Contract {
     
 
     #[private] // Public - but only callable by env::current_account_id()
-    pub fn create_event_callback(&mut self,
+    pub fn create_collection_callback(&mut self,
         acc_id : AccountId,     
         title : String, 
         symbol : String,
         icon : Option<String>,
         base_uri : Option<String>,
         description : Option<String>,
+        category : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
         ticket_types : Option<Vec<TicketType>>,
-        attributes : Option<Vec<EventAttribute>>,
+        attributes : Option<Vec<Attribute>>,
         template_type : Option<TicketTemplate>,
         contract_id : Option<AccountId>,
         #[callback_result] call_result: Result<bool, PromiseError>) {
@@ -84,8 +87,9 @@ impl Contract {
         
         if has_usr {
     
-            self.internal_create_event(env::signer_account_id(), 
-            title, symbol, icon, base_uri, description,  
+            self.internal_create_collection(env::signer_account_id(), 
+            title, symbol, icon, 
+            base_uri, description, category, 
             total_tickets,tickets_sold,
             ticket_types, attributes, 
             template_type, contract_id);
@@ -104,7 +108,7 @@ impl Contract {
 #[near_bindgen]
 impl Contract {
 
-    pub (crate) fn internal_create_event (&mut self, 
+    pub (crate) fn internal_create_collection (&mut self, 
         acc_id : AccountId,     
         title : String, 
         symbol : String,
@@ -112,29 +116,31 @@ impl Contract {
         base_uri : Option<String>,
 
         description : Option<String>,
+        category : Option<String>,
         total_tickets : Option<u64>,
         tickets_sold : Option<u64>,
 
         ticket_types : Option<Vec<TicketType>>,
-        attributes : Option<Vec<EventAttribute>>,
+        attributes : Option<Vec<Attribute>>,
         template_type : Option<TicketTemplate>,
         contract_id : Option<AccountId>) {
     
         
-        let event_id = EventId {
+        let collection_id = CollectionId {
             owner : acc_id.clone(),
             symbol : symbol.clone(), 
             title : title.clone(),
         };
 
-        if self.events.get(&event_id).is_some() {
-            env::panic_str(format!("The event {} for {} already exists",title,acc_id).as_str())
+        if self.collections.get(&collection_id).is_some() {
+            env::panic_str(format!("The collection {} for {} already exists",title,acc_id).as_str())
         }
 
 
-        let event = Event {
+        let collection = Collection {
             title : title,
             description : description,
+            category : category, 
             icon : icon, 
             base_uri : base_uri, 
             total_tickets : total_tickets,
@@ -149,7 +155,7 @@ impl Contract {
         };
 
 
-        self.events.insert(&event_id, &event);
+        self.collections.insert(&collection_id, &collection);
     }
 
        
@@ -165,15 +171,15 @@ impl Contract {
 impl Contract {
 
     // temporary 
-    pub fn remove_all_events(&mut self) {
+    pub fn remove_all_collections(&mut self) {
 
         if env::signer_account_id() == env::current_account_id() {
 
-            self.events.clear();
+            self.collections.clear();
         }
         else {
 
-            env::panic_str(format!("{} is unauthorized for removal of all events", env::signer_account_id()).as_str())
+            env::panic_str(format!("{} is unauthorized for removal of all collections", env::signer_account_id()).as_str())
         }
     }
 }

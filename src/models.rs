@@ -3,7 +3,7 @@ use crate::*;
 
 #[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
-pub struct Event{
+pub struct Collection{
 
     pub title : String, 
 
@@ -11,7 +11,7 @@ pub struct Event{
 
     pub description : Option<String>, 
 
-    // the icon/logo of the event
+    // the icon/logo of the collection
     pub icon : Option<String>,
 
     pub base_uri : Option<String>,
@@ -24,9 +24,11 @@ pub struct Event{
     
     pub tickets_sold : Option<u64>,
 
-    pub attributes : Option<Vec<EventAttribute>>,
+    pub attributes : Option<Vec<Attribute>>,
 
     pub ticket_template_type : Option<TicketTemplate>,
+
+    pub category : Option<String>,
 
     pub owner : AccountId, 
 
@@ -57,7 +59,7 @@ pub struct TicketTemplate {
 
 #[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
 #[serde(crate = "near_sdk::serde")]
-pub enum EventAttributeType {
+pub enum AttributeType {
 
     StartDate,
 
@@ -74,9 +76,9 @@ pub enum EventAttributeType {
 
 #[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
-pub struct EventAttribute{
+pub struct Attribute{
 
-    pub name : EventAttributeType,
+    pub name : AttributeType,
 
     pub value : String, 
 }
@@ -84,7 +86,7 @@ pub struct EventAttribute{
 
 
 #[derive(BorshDeserialize, BorshSerialize)]
-pub struct EventId {
+pub struct CollectionId {
 
     pub title : String, 
 

@@ -1224,7 +1224,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tm_events_contract"
+name = "tm_collections_contract"
 version = "0.1.0"
 dependencies = [
  "near-sdk",
