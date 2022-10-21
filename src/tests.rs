@@ -47,11 +47,22 @@ mod tests {
         None, None, None, Some(vec![Attribute{name : AttributeType::MaxTicketPerWallet,
             value : "1".to_string()}]), None, None );
 
-
+        
         let collections = _contract.get_collections_of(acc_id0, None, None);
 
         for (pos, e) in collections.iter().enumerate() {
             println!("{} - Collection {:?} : {:?}, icon:{:?} attribs: {:?}", (pos + 1), e.title, 
+            e.description.clone().unwrap_or("None".to_string()), 
+            e.icon.clone().unwrap_or("No.icon".to_string()),
+            e.attributes);
+        }
+
+
+    
+        let collections = _contract.get_collections_by("Concert Ticket".to_string(), None, None);
+
+        for (pos, e) in collections.iter().enumerate() {
+            println!("{} - Collection By Cat {:?} : {:?}, icon:{:?} attribs: {:?}", (pos + 1), e.title, 
             e.description.clone().unwrap_or("None".to_string()), 
             e.icon.clone().unwrap_or("No.icon".to_string()),
             e.attributes);

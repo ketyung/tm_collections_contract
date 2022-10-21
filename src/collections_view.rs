@@ -23,5 +23,15 @@ impl Contract {
         .collect::<Vec<Collection>>()
     }
 
+
+    pub fn get_collections_by (&self, category : String,
+        offset : Option<usize>, limit : Option<usize>) -> Vec<Collection>{
+
+        self.collections.values_as_vector().iter()
+        .filter(|c| c.category == Some(category.clone()))
+        .skip(offset.unwrap_or(0))
+        .take(limit.unwrap_or(10))
+        .collect::<Vec<Collection>>()
+    }
  
 }
