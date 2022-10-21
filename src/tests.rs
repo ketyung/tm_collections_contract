@@ -48,7 +48,7 @@ mod tests {
             value : "1".to_string()}]), None, None );
 
         
-        let collections = _contract.get_collections_of(acc_id0, None, None);
+        let collections = _contract.get_collections_of(acc_id0.clone(), None, None);
 
         for (pos, e) in collections.iter().enumerate() {
             println!("{} - Collection {:?} : {:?}, icon:{:?} attribs: {:?}", (pos + 1), e.title, 
@@ -67,6 +67,15 @@ mod tests {
             e.icon.clone().unwrap_or("No.icon".to_string()),
             e.attributes);
         }
+
+        let col = _contract.get_collection(CollectionId {
+            owner : acc_id0.clone(),
+            title : "Test Collection 02".to_string(), 
+            symbol: "TC02".to_string()
+
+        });
+
+        println!("Obtained.coll::{}", col.expect("Failed").title);
 
         testing_env!(context.is_view(true).build());
 

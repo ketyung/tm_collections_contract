@@ -33,5 +33,11 @@ impl Contract {
         .take(limit.unwrap_or(10))
         .collect::<Vec<Collection>>()
     }
+
+
+    pub fn get_collection (&self, collection_id : CollectionId) -> Option<Collection> {
+
+        self.collections.get(&collection_id)
+    }
  
 }
