@@ -19,3 +19,10 @@ trait NftContract {
     token_metadata: TokenMetadata) -> Token;
 
 }
+
+#[ext_contract(ticket_sales_record)]
+trait TicketSalesRecord {
+
+    fn insert_ticket_sale(collection_id : CollectionId, token_id : TokenId, mint_by : AccountId);
+
+}
