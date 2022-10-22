@@ -8,7 +8,7 @@ impl Contract {
     pub fn ticket_mint (&mut self, 
     mint_by : AccountId,     
     collection_id : CollectionId, 
-    token_id : TokenId, ticket_image : String, 
+    token_id : TokenId, ticket_image : String,
     ticket_type : Option<TicketType>) {
         
         let coll =  self.collections.get(&collection_id.clone());
@@ -84,6 +84,10 @@ impl Contract {
             else {
                 env::panic_str("Invalid ticket type!");
             }
+        }
+        else {
+
+
         }
 
 

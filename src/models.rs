@@ -1,6 +1,5 @@
 use crate::*;
 
-
 #[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Collection{
@@ -97,7 +96,6 @@ pub struct CollectionId {
 
 }
 
-
 #[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct TicketType{
@@ -118,5 +116,3 @@ impl PartialEq for TicketType {
         self.ticket_type == other.ticket_type  
     }
 }
-
-
