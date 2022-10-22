@@ -1,5 +1,6 @@
 use crate::*;
 use crate::ext::*;
+use near_sdk::json_types::Base64VecU8;
 
 #[near_bindgen]
 impl Contract {
@@ -98,16 +99,17 @@ impl Contract {
     }
 
 
-    fn create_token_metadata(ticket_title : String, collection_title : String, 
+    fn create_token_metadata(
+        ticket_title : String, collection_title : String, 
         media : Option<String>, 
         ref_hash : Option<String>,
         extra : Option<String>) -> TokenMetadata{
 
-        let mut reference_hash : Option<near_sdk::json_types::Base64VecU8> = None;
+        let mut reference_hash : Option<Base64VecU8> = None;
 
         if ref_hash.is_some(){
 
-            reference_hash = Some(near_sdk::json_types::Base64VecU8::from(
+            reference_hash = Some(Base64VecU8::from(
                 ref_hash.unwrap().as_bytes().to_vec()));
         }
 
