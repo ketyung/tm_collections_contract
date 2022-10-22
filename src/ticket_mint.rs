@@ -9,7 +9,8 @@ impl Contract {
     mint_by : AccountId,     
     collection_id : CollectionId, 
     token_id : TokenId, ticket_image : String,
-    ticket_type : Option<TicketType>) {
+    ticket_type : Option<TicketType>,
+    ref_hash : Option<String>) {
         
         let coll =  self.collections.get(&collection_id.clone());
         if coll.is_none () {
@@ -26,7 +27,9 @@ impl Contract {
 
         let token_meta = Self::create_token_metadata(
             format!("Ticket {}", token_id),
-            uw_coll.title,Some(ticket_image), None);
+            uw_coll.title,Some(ticket_image), 
+            ref_hash, 
+            None);
 
         nft_contract::ext(uw_coll.contract_id.unwrap())
         .with_static_gas(Gas(5*TGAS))
@@ -96,7 +99,17 @@ impl Contract {
 
 
     fn create_token_metadata(ticket_title : String, collection_title : String, 
-        media : Option<String>, extra : Option<String>) -> TokenMetadata{
+        media : Option<String>, 
+        ref_hash : Option<String>,
+        extra : Option<String>) -> TokenMetadata{
+
+        let mut reference_hash : Option<near_sdk::json_types::Base64VecU8> = None;
+
+        if ref_hash.is_some(){
+
+            reference_hash = Some(near_sdk::json_types::Base64VecU8::from(
+                ref_hash.unwrap().as_bytes().to_vec()));
+        }
 
         TokenMetadata {
             title: Some(ticket_title.clone()),
@@ -110,7 +123,7 @@ impl Contract {
             updated_at: None,
             extra: extra,
             reference: None,
-            reference_hash: None,
+            reference_hash: reference_hash,
         }
     }
 
