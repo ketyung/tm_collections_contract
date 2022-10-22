@@ -57,9 +57,9 @@ impl Contract {
         // record ticket sales
         if self.ticket_mints_contract_id.is_some() {
 
-            ticket_mints_record::ext(self.ticket_mints_contract_id.clone().unwrap())
+            ticket_mints_contract::ext(self.ticket_mints_contract_id.clone().unwrap())
             .with_static_gas(Gas(5*TGAS))
-            .insert_ticket_mint(collection_id, token_id,mint_by).as_return();
+            .insert_ticket_mint(collection_id, token_id,mint_by,Some(ticket_price)).as_return();
     
         }
       
