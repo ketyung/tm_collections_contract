@@ -71,7 +71,6 @@ impl Contract {
 
     fn obtain_ticket_price_in_near(ticket_types : Option<Vec<TicketType>>, ticket_type : Option<TicketType>) -> u128{
 
-        let mut ticket_price : u128 = 0;
         
         if ticket_type.is_some() {
 
@@ -82,7 +81,7 @@ impl Contract {
                     env::panic_str(format!("Invalid ticket type {:?}",tt).as_str());
                 }
 
-                ticket_price =  (((tt.price as f64) / 1000.00) * (NEAR as f64)) as u128;
+                return  (((tt.price as f64) / 1000.00) * (NEAR as f64)) as u128;
 
             }
             else {
@@ -91,11 +90,22 @@ impl Contract {
         }
         else {
 
+            if ticket_types.is_some() {
 
+                let uw_ticket_types = ticket_types.unwrap();
+
+                let tt = uw_ticket_types.first().unwrap();
+
+                return (((tt.price as f64) / 1000.00) * (NEAR as f64)) as u128;
+
+            }
+            else {
+
+                env::panic_str("No tickets type defined!");
+            }
         }
 
 
-        return ticket_price;
     }
 
 
