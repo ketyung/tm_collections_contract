@@ -20,9 +20,9 @@ trait NftContract {
 
 }
 
-#[ext_contract(ticket_sales_record)]
-trait TicketSalesRecord {
+#[ext_contract(ticket_mints_record)]
+trait TicketMintsRecord {
 
-    fn insert_ticket_sale(collection_id : CollectionId, token_id : TokenId, mint_by : AccountId);
+    fn insert_ticket_mint(collection_id : CollectionId, token_id : TokenId, mint_by : AccountId);
 
 }
