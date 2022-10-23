@@ -74,10 +74,15 @@ impl Contract {
     pub fn init(users_contract_id : AccountId, ticket_mints_contract_id : AccountId) -> Self {
         assert!(!env::state_exists(), "Already initialized");
         
-        Self{ collections :  UnorderedMap::new(StorageKey::CollectionStorageKey),  
-            users_contract_id : Some(users_contract_id),    
-            ticket_mints_contract_id : Some(ticket_mints_contract_id), 
-            date_updated : Some(env::block_timestamp())}
+        let s = Self{ collections :  UnorderedMap::new(StorageKey::CollectionStorageKey),  
+            users_contract_id : Some(users_contract_id.clone()),    
+            ticket_mints_contract_id : Some(ticket_mints_contract_id.clone()), 
+            date_updated : Some(env::block_timestamp())};
+
+        env::log_str(format!("Contract {} has been initialized with {} & {}",env::current_account_id(),
+        users_contract_id, ticket_mints_contract_id).as_str());
+
+        return s ;
     }
 }
 

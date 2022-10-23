@@ -1,0 +1,8 @@
+// To deploy contract
+near deploy --accountId test_tm_collections_contract.testnet --wasmFile target/wasm32-unknown-unknown/release/tm_collections_contract.wasm 
+
+
+ // To initialize the contract 
+near call test_tm_collections_contract.testnet init '{"users_contract_id":"test_tm_users_contract", "ticket_mints_contract_id":"test_tm_ticket_mints_contract"}' --accountId test_tm_collections_contract.testnet
+
+
