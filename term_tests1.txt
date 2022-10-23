@@ -10,6 +10,3 @@ near view test_tm_collections_contract.testnet get_all_collections
 
 // To view a collection by the specified owner
 near view test_tm_collections_contract.testnet get_collections_of '{"account_id":"ketyung.testnet"}'
-
-// Create collection
-near call test_tm_users_contract.testnet create_collection_and_deploy '{"init_balance":11075,"collection":{"title":"Test NFT Collection 1", "symbol":"TCN1", "icon":"https://k2xpcad4sovv3myhkocu4h53g55kylfaticbna4luuejbzh6o5jq.arweave.net/Vq7xAHyTq12zB1OFTh-7N3qsLKCaBBaDi6UIkOT-d1M"}}' --deposit 12.25 --gas 300000000000000 --accountId ketyung.testnet
