@@ -3,7 +3,7 @@ near deploy --accountId test_tm_collections_contract.testnet --wasmFile target/w
 
 
  // To initialize the contract 
-near call test_tm_collections_contract.testnet init '{"users_contract_id":"test_tm_users_contract", "ticket_mints_contract_id":"test_tm_ticket_mints_contract"}' --accountId test_tm_collections_contract.testnet
+near call test_tm_collections_contract.testnet init '{"users_contract_id":"test_tm_users_contract.testnet", "ticket_mints_contract_id":"test_tm_ticket_mints_contract.testnet"}' --accountId test_tm_collections_contract.testnet
 
 // To view all collections
 near view test_tm_collections_contract.testnet get_all_collections
