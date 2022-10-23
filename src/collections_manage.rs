@@ -166,6 +166,51 @@ impl Contract {
 
 
 
+#[near_bindgen]
+impl Contract {
+
+    pub fn update_collection (&mut self, 
+        acc_id : AccountId,     
+        title : String, 
+        symbol : String,
+        update_collection_data : crate::models::CollectionDataForUpdate) {
+
+
+        let collection_id = CollectionId {
+            owner : acc_id.clone(),
+            symbol : symbol.clone(), 
+            title : title.clone(),
+        };
+
+        let collection = self.collections.get(&collection_id);
+
+        if collection.is_none() {
+            env::panic_str(format!("The collection {} for {} does NOT exist",title,acc_id).as_str())
+        }
+
+        let mut uw_collection = collection.unwrap();
+
+        // only update when the specified property is not none 
+        if update_collection_data.icon.is_some() {
+            uw_collection.icon = update_collection_data.icon;
+        }
+
+        if update_collection_data.description.is_some() {
+            uw_collection.icon = update_collection_data.description;
+        }
+
+        if update_collection_data.ticket_types.is_some() {
+            uw_collection.ticket_types = update_collection_data.ticket_types;
+        }
+        
+        self.collections.remove(&collection_id);
+        self.collections.insert(&collection_id, &uw_collection);
+
+    
+    }
+}
+
+
 
 #[near_bindgen]
 impl Contract {
