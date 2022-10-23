@@ -21,7 +21,7 @@ mod tests {
         let mut context = get_context(accounts(1));
         testing_env!(context.build());
 
-        let mut _contract = Contract::init();
+        let mut _contract = Contract::test_init();
 
         let acc_id0 = accounts(0);
             
@@ -58,9 +58,11 @@ mod tests {
         }
 
 
+        println!("\n");
     
         let collections = _contract.get_collections_by("Concert Ticket".to_string(), None, None);
 
+        println!("Collection of Concert Ticket:");
         for (pos, e) in collections.iter().enumerate() {
             println!("{} - Collection By Cat {:?} : {:?}, icon:{:?} attribs: {:?}", (pos + 1), e.title, 
             e.description.clone().unwrap_or("None".to_string()), 
@@ -75,7 +77,7 @@ mod tests {
 
         });
 
-        println!("Obtained.coll::{}", col.expect("Failed").title);
+        println!("\nObtained.coll::{}", col.expect("Failed").title);
 
         testing_env!(context.is_view(true).build());
 
