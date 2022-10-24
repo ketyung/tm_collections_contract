@@ -4,7 +4,7 @@ use crate::*;
 #[near_bindgen]
 impl Contract {
 
-    fn panic_if_its_not_allowed_caller(&self) {
+    pub (crate) fn panic_if_its_not_allowed_caller(&self) {
 
         let uw_allowed_callers = self.allowed_callers.clone().unwrap();
 

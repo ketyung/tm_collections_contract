@@ -1,6 +1,7 @@
 use crate::*;
 use crate::ext::*;
 use near_sdk::json_types::Base64VecU8;
+use near_sdk::PromiseError;
 
 #[near_bindgen]
 impl Contract {
@@ -20,25 +21,26 @@ impl Contract {
 
         let uw_coll = coll.unwrap();
 
-        let tprice = Self::obtain_ticket_price_in_near(uw_coll.ticket_types, ticket_type);
+        let tprice = Self::obtain_ticket_price_in_near(uw_coll.ticket_types.clone(), ticket_type);
 
         if env::attached_deposit() < tprice {
-            env::panic_str(format!("Attached deposit {} is less than ticket price {}",env::attached_deposit(),tprice).as_str());
+            env::panic_str(format!("Attached deposit {} is less than ticket price {}",
+            env::attached_deposit(),tprice).as_str());
         }
 
         let token_meta = Self::create_token_metadata(
             format!("Ticket {}", token_id),
-            uw_coll.title,Some(ticket_image), 
+            uw_coll.title.clone(),Some(ticket_image), 
             ref_hash, 
             None);
 
-        nft_contract::ext(uw_coll.contract_id.unwrap())
+        nft_contract::ext(uw_coll.contract_id.clone().unwrap())
         .with_static_gas(Gas(5*TGAS))
         .nft_mint(token_id.clone(), mint_by.clone(), token_meta)
         .then( 
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(1*TGAS))
-            .after_mint_and_pay_owner_callback(collection_id, tprice, token_id, mint_by)
+            .after_mint_callback(uw_coll, tprice, token_id, mint_by)
         );
 
 
@@ -49,21 +51,53 @@ impl Contract {
 impl Contract {
 
     #[private] // Public - but only callable by env::current_account_id()
-    pub fn after_mint_and_pay_owner_callback(&mut self, collection_id : CollectionId, 
-        ticket_price : u128, token_id : TokenId, mint_by : AccountId ){
+    pub fn after_mint_callback(&mut self, collection : Collection, 
+        ticket_price : u128, token_id : TokenId, mint_by : AccountId,
+        #[callback_result] call_result: Result<(), PromiseError> ){
+
+        let mut m_collection = collection;
+
+        if call_result.is_err() {
+
+            env::panic_str(format!("Error at after_mint_callback {:?}", call_result).as_str());
+        }    
+
+        env::log_str(format!("Going to pay owner {} with {}", m_collection.owner.clone(),
+        ticket_price).as_str());
         
-        Promise::new(collection_id.clone().owner).transfer(ticket_price).as_return();
+        Promise::new(m_collection.owner.clone()).transfer(ticket_price).as_return();
+
+        let collection_id = CollectionId {
+            owner : m_collection.owner.clone(),
+            symbol : m_collection.symbol.clone(),
+            title : m_collection.title.clone(),
+        };
 
         // record ticket sales
         if self.ticket_mints_contract_id.is_some() {
 
             ticket_mints_contract::ext(self.ticket_mints_contract_id.clone().unwrap())
             .with_static_gas(Gas(5*TGAS))
-            .insert_ticket_mint(collection_id, token_id,mint_by,Some(ticket_price)).as_return();
-    
+            .insert_ticket_mint(collection_id.clone(), token_id,mint_by,Some(ticket_price)).as_return();
         }
+
+        if m_collection.tickets_sold.is_some() {
+
+            m_collection.tickets_sold = Some(m_collection.tickets_sold.unwrap() + 1);
+        }
+        else {
+
+            m_collection.tickets_sold = Some(1);
+        }
+
+        self.collections.remove(&collection_id);
+
+        self.collections.insert(&collection_id, &m_collection);
+    
       
     }
+
+
 }
 
 #[near_bindgen]
