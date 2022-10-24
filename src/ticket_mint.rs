@@ -62,14 +62,19 @@ impl Contract {
     #[private] // Public - but only callable by env::current_account_id()
     pub fn after_mint_callback(&mut self, collection : Collection, 
         ticket_price : u128, token_id : TokenId, mint_by : AccountId,
-        #[callback_result] call_result: Result<(), PromiseError> ){
+        #[callback_result] call_result: Result<Token, PromiseError> ){
 
         let mut m_collection = collection;
 
         if call_result.is_err() {
 
+            // refund the ticket price to the minter/buyer on error
+            Promise::new(mint_by).transfer(ticket_price).as_return();
+
             env::panic_str(format!("Error at after_mint_callback {:?}", call_result).as_str());
         }    
+
+        env::log_str(format!("Minted token is {:?}", call_result).as_str());
 
         env::log_str(format!("Going to pay owner {} with {}", m_collection.owner.clone(),
         ticket_price).as_str());
