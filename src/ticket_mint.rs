@@ -3,6 +3,9 @@ use crate::ext::*;
 use near_sdk::json_types::Base64VecU8;
 use near_sdk::PromiseError;
 
+
+const MIN_STORAGE_COST_FOR_MIN : u128 = 7600_000_000_000_000_000_000;
+
 #[near_bindgen]
 impl Contract {
 
@@ -26,9 +29,11 @@ impl Contract {
 
         let tprice = Self::obtain_ticket_price_in_near(uw_coll.ticket_types.clone(), ticket_type);
 
-        if env::attached_deposit() < tprice {
+        let min_attached_deposit = tprice + MIN_STORAGE_COST_FOR_MIN;
+
+        if env::attached_deposit() < min_attached_deposit  {
             env::panic_str(format!("Attached deposit {} is less than ticket price {}",
-            env::attached_deposit(),tprice).as_str());
+            env::attached_deposit(),min_attached_deposit).as_str());
         }
 
         let token_meta = Self::create_token_metadata(
@@ -39,6 +44,7 @@ impl Contract {
 
         nft_contract::ext(uw_coll.contract_id.clone().unwrap())
         .with_static_gas(Gas(5*TGAS))
+        .with_attached_deposit(MIN_STORAGE_COST_FOR_MIN)
         .nft_mint(token_id.clone(), env::signer_account_id(), token_meta)
         .then( 
             Self::ext(env::current_account_id())
