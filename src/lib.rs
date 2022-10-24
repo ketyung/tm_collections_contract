@@ -30,7 +30,7 @@ pub struct Contract {
     
     collections : UnorderedMap<CollectionId, Collection>,
 
-    users_contract_id : Option<AccountId>, 
+    allowed_callers : Option<Vec<AccountId>>,
 
     ticket_mints_contract_id : Option<AccountId>, 
 
@@ -45,7 +45,7 @@ impl Default for Contract{
     fn default() -> Self{
         Self{
             collections : UnorderedMap::new(StorageKey::CollectionStorageKey),
-            users_contract_id : None, ticket_mints_contract_id : None, 
+            allowed_callers : None, ticket_mints_contract_id : None, 
             date_updated : Some(env::block_timestamp()),
         }
     }
@@ -59,7 +59,7 @@ impl Contract {
         assert!(!env::state_exists(), "Already initialized");
         
         Self{ collections :  UnorderedMap::new(StorageKey::CollectionStorageKey),  
-            users_contract_id : None, ticket_mints_contract_id : None,    
+            allowed_callers : None, ticket_mints_contract_id : None,    
             date_updated : Some(env::block_timestamp())}
     }
 
@@ -71,16 +71,17 @@ impl Contract {
 
     #[init]
     #[private] // Public - but only callable by env::current_account_id()
-    pub fn init(users_contract_id : AccountId, ticket_mints_contract_id : AccountId) -> Self {
+    pub fn init(allowed_callers : Vec<AccountId>, ticket_mints_contract_id : AccountId) -> Self {
         assert!(!env::state_exists(), "Already initialized");
         
         let s = Self{ collections :  UnorderedMap::new(StorageKey::CollectionStorageKey),  
-            users_contract_id : Some(users_contract_id.clone()),    
+            allowed_callers : Some(allowed_callers.clone()),    
             ticket_mints_contract_id : Some(ticket_mints_contract_id.clone()), 
             date_updated : Some(env::block_timestamp())};
 
-        env::log_str(format!("Contract {} has been initialized with {} & {}",env::current_account_id(),
-        users_contract_id, ticket_mints_contract_id).as_str());
+        env::log_str(format!("Contract {} has been initialized with allowed callers {:?} & {}",
+        env::current_account_id(),
+        allowed_callers, ticket_mints_contract_id).as_str());
 
         return s ;
     }

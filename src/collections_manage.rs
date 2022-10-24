@@ -2,23 +2,14 @@ use crate::*;
 use crate::ext::*;
 
 
-const DEFAULT_USERS_CONTRACT_ID :  &'static str = "tm_users_contract.testnet";
-
-
-// hard-coded alloweed callers for testing 
-const ALLOWED_CALLERS : [&'static str; 4] = [
-    "alice",
-    "bob",
-    "test_tm_users_contract.testnet",
-    "test_tm_collections_contract.testnet",
-];
-
 #[near_bindgen]
 impl Contract {
 
-    fn panic_if_its_not_allowed_caller() {
+    fn panic_if_its_not_allowed_caller(&self) {
 
-        if !ALLOWED_CALLERS.contains(&env::predecessor_account_id().as_str()) {
+        let uw_allowed_callers = self.allowed_callers.clone().unwrap();
+
+        if !uw_allowed_callers.contains(&env::predecessor_account_id()) {
             env::panic_str(format!("@{} Error : Caller {} is NOT allowed",
             env::current_account_id(),
             env::predecessor_account_id()).as_str());
@@ -26,20 +17,6 @@ impl Contract {
     }
 }
 
-
-#[near_bindgen]
-impl Contract {
-
-    fn get_users_contract_account(&self) -> AccountId {
-
-        if self.users_contract_id.is_some() {
-
-            return self.users_contract_id.clone().unwrap();
-        }
-
-        DEFAULT_USERS_CONTRACT_ID.parse().unwrap()
-    }
-}
 
 #[near_bindgen]
 impl Contract {
@@ -59,19 +36,16 @@ impl Contract {
         template_type : Option<TicketTemplate>,
         contract_id : Option<AccountId>) {
 
+        // use allowed caller check
+        self.panic_if_its_not_allowed_caller();
 
-        users_contract::ext(self.get_users_contract_account())
+        Self::ext(env::current_account_id())
         .with_static_gas(Gas(5*TGAS))
-        .has_user(&acc_id.clone().as_str().to_string())
-        .then( 
-            Self::ext(env::current_account_id())
-            .with_static_gas(Gas(5*TGAS))
-            .create_collection_callback(acc_id, title, symbol, 
-            icon, base_uri, description, category,
-            total_tickets,tickets_sold, 
-            ticket_types,  attributes,template_type, contract_id)
-        );
-
+        .create_collection_callback(acc_id, title, symbol, 
+        icon, base_uri, description, category,
+        total_tickets,tickets_sold, 
+        ticket_types,  attributes,template_type, contract_id);
+      
     
     }
 
@@ -195,7 +169,7 @@ impl Contract {
         collection_id : CollectionId,
         update_collection_data : crate::models::CollectionDataForUpdate) {
 
-        Self::panic_if_its_not_allowed_caller();
+        self.panic_if_its_not_allowed_caller();
 
         let collection = self.collections.get(&collection_id);
 
