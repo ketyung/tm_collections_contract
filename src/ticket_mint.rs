@@ -21,6 +21,10 @@ impl Contract {
 
         let uw_coll = coll.unwrap();
 
+        if uw_coll.tickets_sold.unwrap_or(0) >= uw_coll.total_tickets.unwrap_or(0) {
+            env::panic_str("Tickets are sold out!");
+        } 
+
         let tprice = Self::obtain_ticket_price_in_near(uw_coll.ticket_types.clone(), ticket_type);
 
         if env::attached_deposit() < tprice {
