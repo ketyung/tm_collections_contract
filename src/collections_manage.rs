@@ -160,6 +160,8 @@ impl Contract {
             uw_collection.category = update_collection_data.category;
         }
 
+        uw_collection.date_updated = Some(env::block_timestamp());
+        
         self.collections.remove(&collection_id);
         self.collections.insert(&collection_id, &uw_collection);
 
