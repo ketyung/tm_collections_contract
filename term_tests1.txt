@@ -15,4 +15,4 @@ near view test_tm_collections_contract.testnet get_all_collections
 near view test_tm_collections_contract.testnet get_collections_of '{"account_id":"ketyung.testnet"}'
 
 // To mint a ticket
-near call test_tm_collections_contract.testnet ticket_mint '{"collection_id":{"title":"Test NFT Collection 030", "symbol":"TCN030"}, "mint_by":"peipei007.testnet"}' --accountId test_tm_collections_contract.testnet
+near call test_tm_collections_contract.testnet ticket_mint '{"collection_id":{"title":"Test NFT Collection 030", "symbol":"TCN030", "owner":"ketyung.testnet"}, "token_id":"00001", "ticket_image":"https://images.squarespace-cdn.com/content/v1/5c69df27ca525b3b56a5cce6/1553776779529-IF27XV130PBNE5RZU3F9/JackBrauer-WanakaSunrise.jpg"}' --accountId peipei007.testnet
