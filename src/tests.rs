@@ -4,7 +4,7 @@ mod tests {
     // use near_sdk::MockedBlockchain;
     use near_sdk::{testing_env, AccountId};
     use crate::*;
-    use crate::models::AttributeType;
+    use crate::models::{AttributeType, CollectionDataForUpdate};
     
     fn get_context(predecessor_account_id: AccountId) -> VMContextBuilder {
         let mut builder = VMContextBuilder::new();
@@ -70,14 +70,40 @@ mod tests {
             e.attributes);
         }
 
-        let col = _contract.get_collection(CollectionId {
+        let update_collection_id = CollectionId {
             owner : acc_id0.clone(),
             title : "Test Collection 02".to_string(), 
             symbol: "TC02".to_string()
 
-        });
+        };
 
-        println!("\nObtained.coll::{}", col.expect("Failed").title);
+        _contract.update_collection(update_collection_id.clone(),
+            CollectionDataForUpdate {
+
+                icon : None, 
+                description: Some("The Test Collection 02 which contains 500 NFTs".to_string()),
+                base_uri : None,
+                total_tickets : Some(500),
+                attributes : None,
+                ticket_template_type : None,
+                category : None,
+                ticket_types : Some(vec![TicketType {
+                    ticket_type : "Standard".to_string(),
+                    price : 23500,
+                    color_code : Some("#236".to_string()), 
+                },TicketType {
+                    ticket_type : "Premium".to_string(),
+                    price : 33500,
+                    color_code : Some("#950".to_string()), 
+                }]),
+            }
+        );
+
+
+        let col = _contract.get_collection(update_collection_id).unwrap();
+
+        println!("\nObtained.coll::title:{}, descr: {:?}, ticket_types :{:?}", col.title,
+        col.description, col.ticket_types);
 
         testing_env!(context.is_view(true).build());
 

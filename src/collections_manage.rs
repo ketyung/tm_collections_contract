@@ -170,22 +170,16 @@ impl Contract {
 impl Contract {
 
     pub fn update_collection (&mut self, 
-        acc_id : AccountId,     
-        title : String, 
-        symbol : String,
+        collection_id : CollectionId,
+
         update_collection_data : crate::models::CollectionDataForUpdate) {
 
-
-        let collection_id = CollectionId {
-            owner : acc_id.clone(),
-            symbol : symbol.clone(), 
-            title : title.clone(),
-        };
 
         let collection = self.collections.get(&collection_id);
 
         if collection.is_none() {
-            env::panic_str(format!("The collection {} for {} does NOT exist",title,acc_id).as_str())
+            env::panic_str(format!("The collection {} for {} does NOT exist",
+            collection_id.title,collection_id.owner).as_str())
         }
 
         let mut uw_collection = collection.unwrap();
@@ -202,6 +196,24 @@ impl Contract {
         if update_collection_data.ticket_types.is_some() {
             uw_collection.ticket_types = update_collection_data.ticket_types;
         }
+
+        if update_collection_data.total_tickets.is_some() {
+            uw_collection.total_tickets = update_collection_data.total_tickets;
+        }
+
+        if update_collection_data.attributes.is_some() {
+            uw_collection.attributes = update_collection_data.attributes;
+        }
+
+        if update_collection_data.ticket_template_type.is_some() {
+            uw_collection.ticket_template_type = update_collection_data.ticket_template_type;
+        }
+
+        if update_collection_data.category.is_some() {
+            uw_collection.category = update_collection_data.category;
+        }
+
+        
         
         self.collections.remove(&collection_id);
         self.collections.insert(&collection_id, &uw_collection);

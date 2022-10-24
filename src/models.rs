@@ -132,8 +132,6 @@ pub struct CollectionDataForUpdate{
 
     pub total_tickets : Option<u64>,
     
-    pub tickets_sold : Option<u64>,
-
     pub attributes : Option<Vec<Attribute>>,
 
     pub ticket_template_type : Option<TicketTemplate>,
