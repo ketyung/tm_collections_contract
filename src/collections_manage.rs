@@ -160,11 +160,11 @@ impl Contract {
             uw_collection.category = update_collection_data.category;
         }
 
-        
-        
         self.collections.remove(&collection_id);
         self.collections.insert(&collection_id, &uw_collection);
 
+        self.date_updated = Some(env::block_timestamp());
+    
     
     }
 }
