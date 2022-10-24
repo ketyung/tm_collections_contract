@@ -6,10 +6,11 @@ const DEFAULT_USERS_CONTRACT_ID :  &'static str = "tm_users_contract.testnet";
 
 
 // hard-coded alloweed callers for testing 
-const ALLOWED_CALLERS : [&'static str; 3] = [
+const ALLOWED_CALLERS : [&'static str; 4] = [
     "alice",
     "bob",
     "test_tm_users_contract.testnet",
+    "test_tm_collections_contract.testnet",
 ];
 
 #[near_bindgen]
