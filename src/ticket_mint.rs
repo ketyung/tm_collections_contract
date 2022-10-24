@@ -8,7 +8,6 @@ impl Contract {
 
     #[payable]
     pub fn ticket_mint (&mut self, 
-    mint_by : AccountId,     
     collection_id : CollectionId, 
     token_id : TokenId, ticket_image : String,
     ticket_type : Option<TicketType>,
@@ -40,11 +39,11 @@ impl Contract {
 
         nft_contract::ext(uw_coll.contract_id.clone().unwrap())
         .with_static_gas(Gas(5*TGAS))
-        .nft_mint(token_id.clone(), mint_by.clone(), token_meta)
+        .nft_mint(token_id.clone(), env::signer_account_id(), token_meta)
         .then( 
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(1*TGAS))
-            .after_mint_callback(uw_coll, tprice, token_id, mint_by)
+            .after_mint_callback(uw_coll, tprice, token_id, env::signer_account_id())
         );
 
 
