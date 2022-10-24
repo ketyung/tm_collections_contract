@@ -18,8 +18,10 @@ impl Contract {
 
     fn panic_if_its_not_allowed_caller() {
 
-        if !ALLOWED_CALLERS.contains(&env::signer_account_id().as_str()) {
-            env::panic_str(format!("Caller {} is NOT allowed",env::signer_account_id()).as_str());
+        if !ALLOWED_CALLERS.contains(&env::predecessor_account_id().as_str()) {
+            env::panic_str(format!("@{} Error : Caller {} is NOT allowed",
+            env::current_account_id(),
+            env::predecessor_account_id()).as_str());
         }
     }
 }
