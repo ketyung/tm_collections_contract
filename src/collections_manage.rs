@@ -38,8 +38,8 @@ impl Contract {
         // use allowed caller check
         self.panic_if_its_not_allowed_caller();
 
-        self.internal_create_collection(acc_id, 
-        title, symbol, icon, 
+        self.internal_create_collection(
+        acc_id, title, symbol, icon, 
         base_uri, description, category, 
         total_tickets,tickets_sold,
         ticket_types, attributes, 
