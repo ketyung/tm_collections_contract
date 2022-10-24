@@ -4,6 +4,26 @@ use crate::ext::*;
 
 const DEFAULT_USERS_CONTRACT_ID :  &'static str = "tm_users_contract.testnet";
 
+
+// hard-coded alloweed callers for testing 
+const ALLOWED_CALLERS : [&'static str; 3] = [
+    "alice",
+    "bob",
+    "test_tm_users_contract.testnet",
+];
+
+#[near_bindgen]
+impl Contract {
+
+    fn panic_if_its_not_allowed_caller() {
+
+        if !ALLOWED_CALLERS.contains(&env::signer_account_id().as_str()) {
+            env::panic_str(format!("Caller {} is NOT allowed",env::signer_account_id()).as_str());
+        }
+    }
+}
+
+
 #[near_bindgen]
 impl Contract {
 
@@ -165,15 +185,18 @@ impl Contract {
 
 
 
-
 #[near_bindgen]
 impl Contract {
 
+
+
+
+
     pub fn update_collection (&mut self, 
         collection_id : CollectionId,
-
         update_collection_data : crate::models::CollectionDataForUpdate) {
 
+        Self::panic_if_its_not_allowed_caller();
 
         let collection = self.collections.get(&collection_id);
 
