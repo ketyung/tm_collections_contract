@@ -191,10 +191,6 @@ impl Contract {
 #[near_bindgen]
 impl Contract {
 
-
-
-
-
     pub fn update_collection (&mut self, 
         collection_id : CollectionId,
         update_collection_data : crate::models::CollectionDataForUpdate) {
@@ -216,7 +212,7 @@ impl Contract {
         }
 
         if update_collection_data.description.is_some() {
-            uw_collection.icon = update_collection_data.description;
+            uw_collection.description = update_collection_data.description;
         }
 
         if update_collection_data.ticket_types.is_some() {
