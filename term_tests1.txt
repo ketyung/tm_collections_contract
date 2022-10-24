@@ -15,4 +15,4 @@ near view test_tm_collections_contract.testnet get_all_collections
 near view test_tm_collections_contract.testnet get_collections_of '{"account_id":"ketyung.testnet"}'
 
 // To mint a ticket
-near call test_tm_collections_contract.testnet ticket_mint '{"collection_id":{"title":"Test NFT Collection 030", "symbol":"TCN030", "owner":"ketyung.testnet"}, "token_id":"00003", "ticket_image":"https://img.freepik.com/free-vector/cute-rabbit-with-duck-working-laptop-cartoon-illustration_56104-471.jpg"}' --deposit 1.358  --gas 300000000000000 --accountId peipei007.testnet
+near call test_tm_collections_contract.testnet ticket_mint '{"collection_id":{"title":"Test NFT Collection 030", "symbol":"TCN030", "owner":"ketyung.testnet"}, "token_id":"00004", "ticket_image":"https://i.ytimg.com/vi/-PaEGleBEIk/maxresdefault.jpg"}' --deposit 1.358  --gas 300000000000000 --accountId peipei007.testnet
