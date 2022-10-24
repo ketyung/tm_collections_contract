@@ -69,7 +69,9 @@ impl Contract {
         if call_result.is_err() {
 
             // refund the ticket price to the minter/buyer on error
-            Promise::new(mint_by).transfer(ticket_price).as_return();
+            Promise::new(mint_by.clone()).transfer(ticket_price).as_return();
+
+            env::log_str(format!("Buyer/minter {} has been refunded with {}",mint_by, ticket_price).as_str());
 
             env::panic_str(format!("Error at after_mint_callback {:?}", call_result).as_str());
         }    
