@@ -69,6 +69,10 @@ pub enum AttributeType {
     EndTime, 
 
     MaxTicketPerWallet,
+
+    Venue,
+
+    SalesPageTemplate,
 }
 
 
