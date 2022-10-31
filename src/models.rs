@@ -68,6 +68,8 @@ pub enum AttributeType {
 
     Venue,
 
+    LocationCoord,
+
     SalesPageTemplate,
 }
 
