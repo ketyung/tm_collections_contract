@@ -56,7 +56,7 @@ pub struct TicketTemplate {
 }
 
 
-#[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize, PartialEq)]
 #[serde(crate = "near_sdk::serde")]
 pub enum AttributeType {
 
@@ -75,7 +75,7 @@ pub enum AttributeType {
 
 
 
-#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize, Debug)]
+#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Attribute{
 

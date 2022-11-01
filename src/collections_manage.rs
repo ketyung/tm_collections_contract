@@ -149,7 +149,30 @@ impl Contract {
         }
 
         if update_collection_data.attributes.is_some() {
-            uw_collection.attributes = update_collection_data.attributes;
+
+            if uw_collection.attributes.is_none() {
+
+                uw_collection.attributes = update_collection_data.attributes;
+            }
+            else {
+
+                let mut uw_attribs = uw_collection.attributes.clone().unwrap();
+                let uw_upd_attribs = update_collection_data.attributes.unwrap();
+                for attrb in uw_upd_attribs {
+
+                    if !uw_attribs.contains(&attrb){
+                        uw_attribs.push(attrb);
+                    }
+                    else {
+
+                        let index = uw_attribs.iter().position(|a| *a == attrb).unwrap();
+                        uw_attribs[index] = attrb;
+                    }
+                }
+
+                uw_collection.attributes = Some(uw_attribs);
+
+            }
         }
 
         if update_collection_data.ticket_template_type.is_some() {
