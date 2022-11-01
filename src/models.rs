@@ -55,6 +55,16 @@ pub struct TicketTemplate {
 
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize, PartialEq)]
+#[serde(crate = "near_sdk::serde")]
+pub enum LinkType {
+
+    Twitter,
+
+    Facebook,
+
+    Website,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize, PartialEq)]
 #[serde(crate = "near_sdk::serde")]
@@ -72,7 +82,8 @@ pub enum AttributeType {
 
     SalesPageTemplate,
 
-    Link(String),
+    Link {link_type: LinkType},
+
 }
 
 
