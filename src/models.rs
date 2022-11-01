@@ -75,13 +75,20 @@ pub enum AttributeType {
 
 
 
-#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(BorshDeserialize, BorshSerialize,Serialize, Deserialize, Debug, Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Attribute{
 
     pub name : AttributeType,
 
     pub value : String, 
+}
+
+impl PartialEq for Attribute {
+
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name  
+    }
 }
 
 
