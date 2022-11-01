@@ -71,6 +71,8 @@ pub enum AttributeType {
     LocationCoord,
 
     SalesPageTemplate,
+
+    Link(String),
 }
 
 
