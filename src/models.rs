@@ -57,7 +57,6 @@ pub struct TicketTemplate {
 
 #[derive(Debug, Clone, Serialize, Deserialize, BorshDeserialize, BorshSerialize, PartialEq)]
 #[serde(crate = "near_sdk::serde")]
-#[serde(untagged)]
 pub enum AttributeType {
 
     StartDate,
@@ -71,8 +70,6 @@ pub enum AttributeType {
     LocationCoord,
 
     SalesPageTemplate,
-
-    Link {link_type : String},
 
 }
 

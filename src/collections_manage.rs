@@ -211,4 +211,28 @@ impl Contract {
             env::panic_str(format!("{} is unauthorized for removal of all collections", env::signer_account_id()).as_str())
         }
     }
+
+
+    pub fn remove_collection_attributes(&mut self,  collection_id : CollectionId) {
+
+        if env::signer_account_id() != env::current_account_id() {
+
+            env::panic_str(format!("{} is unauthorized for removal of the collection's attributes", 
+            env::signer_account_id()).as_str())
+        }
+
+        let coll = self.collections.get(&collection_id);
+
+        if coll.is_some(){
+            let mut uw_coll = coll.unwrap();
+
+            uw_coll.attributes = None;
+
+            self.collections.remove(&collection_id);
+            self.collections.insert(&collection_id, &uw_coll);
+    
+            self.date_updated = Some(env::block_timestamp());
+        
+        }
+    }
 }
