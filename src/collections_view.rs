@@ -41,7 +41,7 @@ impl Contract {
     }
 
 
-    pub fn get_next_ticket_number (&self, collection_id : CollectionId) -> Option<String> {
+    pub fn get_next_ticket_number (&self, collection_id : CollectionId, width : Option<usize>) -> Option<String> {
 
         let coll = self.collections.get(&collection_id);
 
@@ -61,7 +61,7 @@ impl Contract {
 
                     let a = uw_attribs[index.unwrap()].clone();
                    
-                    return Some(a.value);
+                    return Some(Self::pad_left_with_zero(a.value.as_str(),width.unwrap_or(5)));
                 }
 
 
