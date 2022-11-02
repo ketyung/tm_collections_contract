@@ -71,6 +71,8 @@ pub enum AttributeType {
 
     SalesPageTemplate,
 
+    NextTicketNumber,
+
 }
 
 
