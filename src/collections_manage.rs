@@ -314,10 +314,7 @@ impl Contract {
 
         }
 
-        env::log_str(format!("Next ticket no is {}", next_ticket_no).as_str());
-
         return Some(next_ticket_no);
-
     }
  
 }
