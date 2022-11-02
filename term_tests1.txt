@@ -22,3 +22,6 @@ near call test_tm_collections_contract.testnet ticket_mint '{"collection_id":{"t
 
 // To remove all attributes of a collection
 near call test_tm_collections_contract.testnet remove_collection_attributes '{"collection_id":{"title":"Test NFT Collection 030", "symbol":"TCN030", "owner":"ketyung.testnet"}}'  --accountId test_tm_collections_contract.testnet
+
+// To get next ticket number 
+near call test_tm_collections_contract.testnet get_next_ticket_number '{"collection_id":{"title":"Test NFT Collection 030", "symbol":"TCN030", "owner":"ketyung.testnet"}}' --accountId peipei007.testnet

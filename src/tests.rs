@@ -111,6 +111,25 @@ mod tests {
     }
 
 
+    // cargo test test_pad_left_with_zero -- --show-output
+    #[test]
+    fn test_pad_left_with_zero() {
+    
+        let p = Contract::pad_left_with_zero("2",6);
+        println!("p is {};", p);
+
+        let p = Contract::pad_left_with_zero("223",9);
+        println!("p is {};", p);
+      
+        let p = Contract::pad_left_with_zero("x223",7);
+        println!("p is {};", p);
+      
+        let p = Contract::pad_left_with_zero("2123",17);
+        println!("p is {};", p);
+      
+    }
+
+
 
   
  

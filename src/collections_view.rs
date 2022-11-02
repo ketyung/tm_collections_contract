@@ -47,10 +47,22 @@ impl Contract {
 #[near_bindgen]
 impl Contract {
 
+
+    pub (crate) fn pad_left_with_zero(value : &str, width : usize) -> String {
+
+        format!("{:0>1$}", value, width)
+    }
+
     pub fn get_next_ticket_number (&mut self, collection_id : CollectionId,
-    width : usize) -> Option<String> {
+    width : Option<usize>) -> Option<String> {
 
         let coll = self.collections.get(&collection_id);
+
+        let mut a_width : usize = 5 ;
+
+        if width.is_some() {
+            a_width = width.unwrap();
+        }
 
         let mut next_ticket_no = String::from("01");
 
@@ -63,7 +75,7 @@ impl Contract {
                 let attbs : Vec<Attribute> = vec![Attribute{name : AttributeType::NextTicketNumber,
                 value : "1".to_string()}];
 
-                next_ticket_no = format!("{:0width$}", "1", width = width);
+                next_ticket_no = Self::pad_left_with_zero ("1", a_width);
             
                 uw_collection.attributes = Some(attbs);
             }
@@ -84,14 +96,14 @@ impl Contract {
 
                     a.value = format!("{}", current_no);
                   
-                    next_ticket_no = format!("{:0width$}", a.value, width = width);
+                    next_ticket_no = Self::pad_left_with_zero(a.value.as_str(), a_width);
             
                     uw_attribs[index.unwrap()] = a;
                 }
                 else {
 
                     uw_attribs.push(attrb);
-                    next_ticket_no = format!("{:0width$}", "1", width = width);
+                    next_ticket_no = Self::pad_left_with_zero("1", a_width);
             
                 }
 
@@ -106,6 +118,8 @@ impl Contract {
         
 
         }
+
+        env::log_str(format!("Next ticket no is {}", next_ticket_no).as_str());
 
         return Some(next_ticket_no);
 
