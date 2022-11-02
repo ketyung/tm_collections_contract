@@ -41,89 +41,40 @@ impl Contract {
     }
 
 
-}
-
-
-#[near_bindgen]
-impl Contract {
-
-
-    pub (crate) fn pad_left_with_zero(value : &str, width : usize) -> String {
-
-        format!("{:0>1$}", value, width)
-    }
-
-    pub fn get_next_ticket_number (&mut self, collection_id : CollectionId,
-    width : Option<usize>) -> Option<String> {
+    pub fn get_next_ticket_number (&self, collection_id : CollectionId) -> Option<String> {
 
         let coll = self.collections.get(&collection_id);
 
-        let mut a_width : usize = 5 ;
-
-        if width.is_some() {
-            a_width = width.unwrap();
-        }
-
-        let mut next_ticket_no = String::from("01");
-
         if coll.is_some() {
 
-            let mut uw_collection = coll.unwrap();
+            let uw_collection = coll.unwrap();
+            let attribs = uw_collection.attributes;
 
-            if uw_collection.attributes.is_none() {
-            
-                let attbs : Vec<Attribute> = vec![Attribute{name : AttributeType::NextTicketNumber,
-                value : "1".to_string()}];
+            if attribs.is_some() {
 
-                next_ticket_no = Self::pad_left_with_zero ("1", a_width);
-            
-                uw_collection.attributes = Some(attbs);
-            }
-            else {
-
-                let mut uw_attribs = uw_collection.attributes.unwrap();
-
+                let uw_attribs = attribs.unwrap();
                 let attrb = Attribute{name : AttributeType::NextTicketNumber,
                     value : "1".to_string()};
 
                 let index = uw_attribs.iter().position(|a| *a == attrb);
                 if index.is_some() {
 
-                    let mut a = uw_attribs[index.unwrap()].clone();
-                    let mut current_no : u32 = a.value.parse::<u32>().expect("Failed to parse into interger");
-
-                    current_no+=1;
-
-                    a.value = format!("{}", current_no);
-                  
-                    next_ticket_no = Self::pad_left_with_zero(a.value.as_str(), a_width);
-            
-                    uw_attribs[index.unwrap()] = a;
-                }
-                else {
-
-                    uw_attribs.push(attrb);
-                    next_ticket_no = Self::pad_left_with_zero("1", a_width);
-            
+                    let a = uw_attribs[index.unwrap()].clone();
+                   
+                    return Some(a.value);
                 }
 
-                uw_collection.attributes = Some(uw_attribs);
-          
+
             }
 
-            self.collections.remove(&collection_id);
-            self.collections.insert(&collection_id, &uw_collection);
-    
-            self.date_updated = Some(env::block_timestamp());
-        
-
+            
         }
 
-        env::log_str(format!("Next ticket no is {}", next_ticket_no).as_str());
-
-        return Some(next_ticket_no);
-
+        None 
     }
- 
+
 }
+
+
+
 
