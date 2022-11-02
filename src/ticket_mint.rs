@@ -14,8 +14,11 @@ impl Contract {
     collection_id : CollectionId, 
     token_id : TokenId, ticket_image : String,
     ticket_type : Option<TicketType>,
+    extra  : Option<String>,
     ref_hash : Option<String>) {
         
+        self.panic_if_its_not_allowed_caller();
+
         let coll =  self.collections.get(&collection_id.clone());
         if coll.is_none () {
             env::panic_str(format!("Collection {:?} not found",collection_id.clone()).as_str());
@@ -40,7 +43,7 @@ impl Contract {
             format!("Ticket {}", token_id),
             uw_coll.title.clone(),Some(ticket_image), 
             ref_hash, 
-            None);
+            extra);
 
         nft_contract::ext(uw_coll.contract_id.clone().unwrap())
         .with_static_gas(Gas(5*TGAS))
