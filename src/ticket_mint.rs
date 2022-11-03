@@ -53,7 +53,7 @@ impl Contract {
         .nft_mint(token_id.clone(), env::signer_account_id(), token_meta)
         .then( 
             Self::ext(env::current_account_id())
-            .with_static_gas(Gas(1*TGAS))
+            .with_static_gas(Gas(5*TGAS))
             .after_mint_callback(uw_coll, tprice, token_id, env::signer_account_id())
         );
 
