@@ -4,7 +4,6 @@ mod tests {
     // use near_sdk::MockedBlockchain;
     use near_sdk::{testing_env, AccountId};
     use crate::*;
-    use crate::models::{AttributeType, CollectionDataForUpdate};
     
     fn get_context(predecessor_account_id: AccountId) -> VMContextBuilder {
         let mut builder = VMContextBuilder::new();

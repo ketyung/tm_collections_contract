@@ -118,7 +118,7 @@ impl Contract {
 
     pub fn update_collection (&mut self, 
         collection_id : CollectionId,
-        update_collection_data : crate::models::CollectionDataForUpdate) {
+        update_collection_data :CollectionDataForUpdate) {
 
         self.panic_if_its_not_allowed_caller();
 

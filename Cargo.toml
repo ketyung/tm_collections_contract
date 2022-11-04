@@ -13,6 +13,7 @@ crate-type = ["cdylib"]
 near-sdk = "4.0.0"
 uint = { version = "0.9.3", default-features = false }
 near-contract-standards = "4.0.0"
+tm-collections-models = { version = "0.1.0", path = "../tm_collections_models" }
 
 [profile.release]
 codegen-units = 1

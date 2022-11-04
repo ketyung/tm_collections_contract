@@ -1,4 +1,3 @@
-pub mod models;
 pub mod collections_manage;
 pub mod collections_view;
 pub mod ext;
@@ -7,9 +6,8 @@ mod tests;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{near_bindgen, env,ext_contract, BorshStorageKey, AccountId, Gas, Promise  };
-use near_sdk::serde::{Serialize, Deserialize};
 use near_sdk::collections::{UnorderedMap};
-use crate::models::{Collection, CollectionId, TicketType, Attribute, TicketTemplate, AttributeType};
+use tm_collections_models::models::*;
 use near_contract_standards::non_fungible_token::metadata::TokenMetadata;
 use near_contract_standards::non_fungible_token::{Token, TokenId};
 
