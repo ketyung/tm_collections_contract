@@ -21,6 +21,7 @@ trait NftContract {
 #[ext_contract(ticket_mints_contract)]
 trait TicketMintsRecord {
 
-    fn insert_ticket_mint(collection_id : CollectionId, token_id : TokenId, mint_by : AccountId, price : Option<u128>);
+    fn insert_ticket_mint(collection_id : CollectionId, token_id : TokenId,
+        mint_by : AccountId, price : Option<u128>, ticket_type : Option<String>);
 
 }

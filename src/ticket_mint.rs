@@ -32,7 +32,7 @@ impl Contract {
             env::panic_str("Tickets are sold out!");
         } 
 
-        let tprice = Self::obtain_ticket_price_in_near(uw_coll.ticket_types.clone(), ticket_type);
+        let tprice = Self::obtain_ticket_price_in_near(uw_coll.ticket_types.clone(), ticket_type.clone());
 
         let min_attached_deposit = tprice + MIN_STORAGE_COST_FOR_MINT;
 
@@ -58,7 +58,8 @@ impl Contract {
         .then( 
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(5*TGAS))
-            .after_mint_callback(uw_coll, tprice, token_id, env::signer_account_id())
+            .after_mint_callback(uw_coll, tprice,ticket_type.unwrap().ticket_type, 
+            token_id, env::signer_account_id())
         );
 
 
@@ -70,7 +71,8 @@ impl Contract {
 
     #[private] // Public - but only callable by env::current_account_id()
     pub fn after_mint_callback(&mut self, collection : Collection, 
-        ticket_price : u128, token_id : TokenId, mint_by : AccountId,
+        ticket_price : u128, ticket_type : String, 
+        token_id : TokenId, mint_by : AccountId,
         #[callback_result] call_result: Result<Token, PromiseError> ){
 
         let mut m_collection = collection;
@@ -103,7 +105,8 @@ impl Contract {
 
             ticket_mints_contract::ext(self.ticket_mints_contract_id.clone().unwrap())
             .with_static_gas(Gas(5*TGAS))
-            .insert_ticket_mint(collection_id.clone(), token_id,mint_by,Some(ticket_price)).as_return();
+            .insert_ticket_mint(collection_id.clone(), token_id,mint_by,Some(ticket_price),
+            Some(ticket_type)).as_return();
         }
 
         if m_collection.tickets_sold.is_some() {
