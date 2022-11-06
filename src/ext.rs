@@ -12,6 +12,10 @@ trait NftContract {
     fn nft_mint (token_id: TokenId,receiver_id: AccountId,
     token_metadata: TokenMetadata) -> Token;
 
+    fn nft_tokens_for_owner(account_id: AccountId,
+        from_index: Option<near_sdk::json_types::U128>,
+        limit: Option<u64>) -> Vec<Token>;
+
 }
 
 #[ext_contract(ticket_mints_contract)]
