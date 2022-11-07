@@ -41,30 +41,120 @@ impl Contract {
             env::attached_deposit(),min_attached_deposit).as_str());
         }
 
-        self.has_exceeded_max_ticket_per_wallet(uw_coll.attributes.clone(),
-            uw_coll.contract_id.clone(),
-            tprice, env::current_account_id());
+        self.mint_if_not_exceeded_mtpw(uw_coll, token_id, ticket_image,
+        ticket_type, extra, ref_hash, tprice, env::signer_account_id());
+
+
+    }
+}
+
+
+#[near_bindgen]
+impl Contract {
+
+
+    fn get_max_ticket_per_wallet(&self, collection : &Collection) -> Attribute{
+
+        let attributes = collection.attributes.clone();
+
+        let mut max_ticket_pw_attrib = Attribute {
+            name : AttributeType::MaxTicketPerWallet, value : format!("{}", 
+            collection.total_tickets.unwrap_or(10000))
+        };
+
+        if attributes.is_some() {
+
+            let uw_attrbs = attributes.unwrap(); 
+            let index =  uw_attrbs.iter().position(|a| *a == max_ticket_pw_attrib);
+
+            if index.is_some() {
+                let attrb = uw_attrbs.get(index.unwrap());
+                max_ticket_pw_attrib.value = attrb.unwrap().clone().value;
+            }
+        }
+        
+        max_ticket_pw_attrib
+    }
+
+    fn mint_if_not_exceeded_mtpw(&mut self, 
+        collection : Collection, 
+        token_id : TokenId, 
+        ticket_image : String,
+        ticket_type : Option<TicketType>,
+        extra  : Option<String>,
+        ref_hash : Option<String>,
+        ticket_price : u128, 
+        mint_by : AccountId) {
+
+      
+        let max_ticket_pw_attrib = self.get_max_ticket_per_wallet(&collection);
+
+        nft_contract::ext(collection.contract_id.clone().unwrap())
+        .with_static_gas(Gas(5*TGAS))
+        .nft_tokens_for_owner(env::signer_account_id(), None, None)
+        .then( 
+            Self::ext(env::current_account_id())
+            .with_static_gas(Gas(5*TGAS))
+            .after_obtain_nft_count_callback(
+                collection, token_id, ticket_image, ticket_type,
+                extra, ref_hash,
+                max_ticket_pw_attrib, ticket_price, mint_by)
+        );
+
+    }
+
+    #[private] // Public - but only callable by env::current_account_id()
+    pub fn after_obtain_nft_count_callback(&mut self, 
+        collection : Collection, 
+        token_id : TokenId, 
+        ticket_image : String,
+        ticket_type : Option<TicketType>,
+        extra  : Option<String>,
+        ref_hash : Option<String>,
+        max_ticket_per_wallet : Attribute,
+        ticket_price : u128, mint_by : AccountId,
+        #[callback_result] call_result: Result<Vec<Token>, PromiseError> ){
+
+        if call_result.is_err() {
+
+            // refund the ticket price to the minter/buyer on error
+            Promise::new(mint_by.clone()).transfer(ticket_price).as_return();
+            env::log_str(format!("Buyer/minter {} has been refunded with {}",mint_by, ticket_price).as_str());
+            env::panic_str(format!("Error at after_obtain_nft_count_callback {:?}", call_result).as_str());
+            
+        }
+
+        let res : Vec<Token> = call_result.unwrap();
+
+        if res.len() >= max_ticket_per_wallet.value.parse::<usize>().unwrap() {
+
+            env::panic_str("Has exceeed the number of tickets per wallet!");
+        } 
 
         let token_meta = Self::create_token_metadata(
             format!("Ticket {}", token_id),
-            uw_coll.title.clone(),Some(ticket_image), 
+            collection.title.clone(),Some(ticket_image), 
             ref_hash, 
             extra);
 
-        nft_contract::ext(uw_coll.contract_id.clone().unwrap())
+        nft_contract::ext(collection.contract_id.clone().unwrap())
         .with_static_gas(Gas(5*TGAS))
         .with_attached_deposit(MIN_STORAGE_COST_FOR_MINT)
         .nft_mint(token_id.clone(), env::signer_account_id(), token_meta)
         .then( 
             Self::ext(env::current_account_id())
             .with_static_gas(Gas(5*TGAS))
-            .after_mint_callback(uw_coll, tprice,ticket_type.unwrap().ticket_type, 
+            .after_mint_callback(collection, ticket_price,ticket_type.unwrap().ticket_type, 
             token_id, env::signer_account_id())
         );
 
-
+    
     }
+
+
 }
+
+
 
 #[near_bindgen]
 impl Contract {
@@ -122,7 +212,6 @@ impl Contract {
 
         self.collections.insert(&collection_id, &m_collection);
     
-      
     }
 
 
@@ -204,71 +293,3 @@ impl Contract {
 }
 
 
-#[near_bindgen]
-impl Contract {
-
-
-    fn has_exceeded_max_ticket_per_wallet(&mut self, 
-        attributes :Option<Vec<Attribute>>,
-        contract_id : Option<AccountId>,
-        ticket_price : u128, mint_by : AccountId) {
-
-       
-        let mut max_ticket_pw_attrib = Attribute {
-            name : AttributeType::MaxTicketPerWallet, value : "None".to_string()
-        };
-
-        if attributes.is_some() {
-
-            let uw_attrbs = attributes.unwrap(); 
-            let index =  uw_attrbs.iter().position(|a| *a == max_ticket_pw_attrib);
-
-            if index.is_none() {
-                return; 
-            }
-
-            let attrb = uw_attrbs.get(index.unwrap());
-            max_ticket_pw_attrib.value = attrb.unwrap().clone().value;
-
-        }    
-
-
-        nft_contract::ext(contract_id.unwrap())
-        .with_static_gas(Gas(5*TGAS))
-        .nft_tokens_for_owner(env::signer_account_id(), None, None)
-        .then( 
-            Self::ext(env::current_account_id())
-            .with_static_gas(Gas(5*TGAS))
-            .after_obtain_nft_count_callback(max_ticket_pw_attrib, ticket_price, mint_by)
-        );
-
-    }
-
-    #[private] // Public - but only callable by env::current_account_id()
-    pub fn after_obtain_nft_count_callback(&mut self, 
-        max_ticket_per_wallet : Attribute,
-        ticket_price : u128, mint_by : AccountId,
-        #[callback_result] call_result: Result<Vec<Token>, PromiseError> ){
-
-        if call_result.is_err() {
-
-            // refund the ticket price to the minter/buyer on error
-            Promise::new(mint_by.clone()).transfer(ticket_price).as_return();
-
-            env::log_str(format!("Buyer/minter {} has been refunded with {}",mint_by, ticket_price).as_str());
-
-            env::panic_str(format!("Error at after_obtain_nft_count_callback {:?}", call_result).as_str());
-        }
-
-        let res : Vec<Token> = call_result.unwrap();
-
-        if res.len() >= max_ticket_per_wallet.value.parse::<usize>().unwrap() {
-
-            env::panic_str("Has exceeed the number of tickets per wallet!");
-        } 
-
-    
-    }
-
-
-}
