@@ -191,7 +191,7 @@ impl Contract {
             media: media,
             media_hash: None,
             copies: Some(1u64),
-            issued_at: None ,
+            issued_at: Some(format!("{}", env::block_timestamp())) ,
             expires_at: None,
             starts_at: None,
             updated_at: None,
