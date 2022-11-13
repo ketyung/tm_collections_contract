@@ -131,8 +131,13 @@ impl Contract {
 
         let mut uw_collection = collection.unwrap();
 
+        // when the collection is ready for sale
+        // only certain information is allowed to be updated
+        let is_ready_for_sale = Self::is_collection_ready_for_sale(
+            uw_collection.attributes.clone());
+
         // only update when the specified property is not none 
-        if update_collection_data.icon.is_some() {
+        if !is_ready_for_sale && update_collection_data.icon.is_some() {
             uw_collection.icon = update_collection_data.icon;
         }
 
@@ -140,11 +145,11 @@ impl Contract {
             uw_collection.description = update_collection_data.description;
         }
 
-        if update_collection_data.ticket_types.is_some() {
+        if !is_ready_for_sale && update_collection_data.ticket_types.is_some() {
             uw_collection.ticket_types = update_collection_data.ticket_types;
         }
 
-        if update_collection_data.total_tickets.is_some() {
+        if !is_ready_for_sale && update_collection_data.total_tickets.is_some() {
             uw_collection.total_tickets = update_collection_data.total_tickets;
         }
 
@@ -152,12 +157,29 @@ impl Contract {
 
             if uw_collection.attributes.is_none() {
 
-                uw_collection.attributes = update_collection_data.attributes;
+                if is_ready_for_sale {
+
+                    if update_collection_data.attributes.is_some() {
+
+                        uw_collection.attributes = 
+                        Some(Self::filter_attributes_for_ready_for_sale(
+                            update_collection_data.attributes.unwrap()));
+                    }
+                  
+                }
+                else {
+                    uw_collection.attributes = update_collection_data.attributes;
+                }
             }
             else {
 
                 let mut uw_attribs = uw_collection.attributes.clone().unwrap();
-                let uw_upd_attribs = update_collection_data.attributes.unwrap();
+                let mut uw_upd_attribs = update_collection_data.attributes.unwrap();
+
+                if is_ready_for_sale {
+                    uw_upd_attribs = Self::filter_attributes_for_ready_for_sale(uw_upd_attribs);
+                }
+
                 for attrb in uw_upd_attribs {
 
                     if !uw_attribs.contains(&attrb){
@@ -175,7 +197,7 @@ impl Contract {
             }
         }
 
-        if update_collection_data.ticket_template_type.is_some() {
+        if !is_ready_for_sale && update_collection_data.ticket_template_type.is_some() {
             uw_collection.ticket_template_type = update_collection_data.ticket_template_type;
         }
 
@@ -191,6 +213,46 @@ impl Contract {
         self.date_updated = Some(env::block_timestamp());
     
     
+    }
+
+
+    /*
+    The function that filters out the attributes that are allowed
+    to add or update when the status is ready for sale
+    */
+    fn filter_attributes_for_ready_for_sale(attributes : Vec<Attribute>) -> Vec<Attribute>{
+
+        attributes.into_iter()
+        .filter(|a| a.name == AttributeType::SalesPageTemplate ||
+        a.name == AttributeType::Status || a.name == AttributeType::Twitter
+        || a.name == AttributeType::Facebook || a.name == AttributeType::Facebook)
+        .skip(0)
+        .collect::<Vec<Attribute>>()
+    
+    }
+
+
+    fn is_collection_ready_for_sale(collection_attributes : Option<Vec<Attribute>>) -> bool {
+
+        let ready_for_sale = Attribute {
+            name : AttributeType::Status,
+            value : "R".to_string(),
+        };
+
+        if collection_attributes.is_some() {
+
+            let uw_attribs = collection_attributes.unwrap();
+
+            let index = uw_attribs.iter().position(|a| *a == ready_for_sale);
+            if index.is_some() {
+    
+                return uw_attribs[index.unwrap()].value == "R".to_string();
+            }
+    
+        }
+
+       
+        false 
     }
 }
 
