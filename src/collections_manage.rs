@@ -226,7 +226,6 @@ impl Contract {
         .filter(|a| a.name == AttributeType::SalesPageTemplate ||
         a.name == AttributeType::Status || a.name == AttributeType::Twitter
         || a.name == AttributeType::Facebook || a.name == AttributeType::Facebook)
-        .skip(0)
         .collect::<Vec<Attribute>>()
     
     }
