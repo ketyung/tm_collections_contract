@@ -347,8 +347,15 @@ impl Contract {
 
                     let mut a = uw_attribs[index.unwrap()].clone();
                     let mut current_no : u32 = a.value.parse::<u32>().expect("Failed to parse into interger");
+                    
+                    let starting_no = Self::get_ticket_starting_number(uw_attribs.clone());
+                    
+                    if current_no == 0 {
+                        current_no += starting_no;
+                    }
 
                     current_no+=1;
+
 
                     a.value = format!("{}", current_no);
                   
@@ -376,6 +383,24 @@ impl Contract {
         }
 
         return Some(next_ticket_no);
+    }
+
+
+    fn get_ticket_starting_number (collection_attributes : Vec<Attribute>) -> u32 {
+
+
+        let attrb = Attribute{name : AttributeType::TicketStartingNumber,
+            value : "0".to_string()};
+
+        let index = collection_attributes.iter().position(|a| *a == attrb);
+        if index.is_some() {
+            let a = collection_attributes.get(index.unwrap()).unwrap();
+            let n = a.value.parse::<u32>().expect("Failed to parse into interger");
+            return n;
+        }   
+
+        0
+
     }
  
 }
