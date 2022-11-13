@@ -339,8 +339,10 @@ impl Contract {
 
                 let mut uw_attribs = uw_collection.attributes.unwrap();
 
+                let starting_no = Self::get_ticket_starting_number(uw_attribs.clone());
+                
                 let attrb = Attribute{name : AttributeType::NextTicketNumber,
-                    value : "1".to_string()};
+                    value : format!("{}", 1 + starting_no)};
 
                 let index = uw_attribs.iter().position(|a| *a == attrb);
                 if index.is_some() {
@@ -348,7 +350,6 @@ impl Contract {
                     let mut a = uw_attribs[index.unwrap()].clone();
                     let mut current_no : u32 = a.value.parse::<u32>().expect("Failed to parse into interger");
                     
-                    let starting_no = Self::get_ticket_starting_number(uw_attribs.clone());
                     
                     if current_no == 0 {
                         current_no += starting_no;
