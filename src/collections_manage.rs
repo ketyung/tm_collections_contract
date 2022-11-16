@@ -225,6 +225,7 @@ impl Contract {
         attributes.into_iter()
         .filter(|a| a.name == AttributeType::SalesPageTemplate ||
         a.name == AttributeType::Status || a.name == AttributeType::Twitter
+        || a.name == AttributeType::BuyerRequiredToSignUp
         || a.name == AttributeType::Facebook || a.name == AttributeType::Facebook)
         .collect::<Vec<Attribute>>()
     
