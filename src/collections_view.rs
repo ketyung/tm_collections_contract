@@ -1,4 +1,6 @@
 use crate::*;
+use itertools::Itertools;
+
 
 #[near_bindgen]
 impl Contract {
@@ -18,6 +20,7 @@ impl Contract {
 
         self.collections.values_as_vector().iter()
         .filter(|c| c.owner == account_id)
+        .sorted_by(|a, b| Ord::cmp(&b.date_updated, &a.date_updated))
         .skip(offset.unwrap_or(0))
         .take(limit.unwrap_or(10))
         .collect::<Vec<Collection>>()
