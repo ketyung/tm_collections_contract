@@ -1,4 +1,6 @@
 ## Smart contract for ticket collection
+The smart contract for storing ahd handling ticket collection for TicketMaker.
+https://ticketmaker.xyz
 
 ## License 
 MIT License
